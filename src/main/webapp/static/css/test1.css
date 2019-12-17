@@ -1,0 +1,285 @@
+/* [href="https://www.sina.com"]{
+    color: red;
+} */
+
+/* 
+顺序：l v h a
+} */
+/* a:link{
+    color:blue;
+}
+ a:visited{
+    color:blue;
+} 
+a:hover{
+    color:red;
+}
+a:active{
+    color:#008c8c;
+}
+.red li{
+    color:#008c8c;
+} */
+@import "reset.css";
+/* common */
+.container{
+    width: 950px;
+    margin: 0 auto;
+    list-style: none;
+}
+.section{
+    padding: 30px;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
+.clearfix::after{
+    content: "";
+    display: block;
+    clear: both;
+}
+/* header */
+.header{
+    height: 90px;
+}
+.header .container{
+    margin-top: 30px;
+    border-bottom:3px solid #008c8c;
+}
+.header .logo a{
+    width: 100px;
+    height: 30px;
+    margin-left: 50px;
+    display: block;
+    color: #008c8c;
+    text-decoration: none;
+}
+
+.header .search{
+    margin-top: 30px;
+    float: left;
+    border: 1px solid #ccc;
+}
+.header .search .txt::placeholder{
+    color: #ccc;
+}
+.header .search_input{
+    padding: 0 8px;
+    margin-left: 2px;
+    height: 28px;
+
+}
+.header .search .search_btn{
+    width: 20px;
+    height: 26px;
+    background: url(../img/search.png) left center no-repeat;
+    float: right;
+    margin-right: 10px;
+}
+.search_btn:hover{
+    cursor: pointer;
+}
+.header .menu a{
+    width: 154px;
+    height: 30px;
+    display: block;
+    color: #008c8c;
+    text-decoration: none;
+}
+
+/* Case list */
+.sort_bar .topnav li{
+    display: block;
+    float: left;
+    margin: 0 20px;
+    padding: 0 8px;
+    width: 200px;
+    box-sizing: border-box;
+}
+.sort_bar .topnav >li .submenu{
+    line-height: 1.5;
+    display: none;
+    background: white;
+    width: 200px;
+    box-sizing: border-box;
+}
+.sort_bar .topnav>li:hover{
+    background: #ffffff;
+    border: 2px solid #999;
+    line-height: 32px;
+}
+
+.sort_bar .topnav li .submenu li{
+    color: #999;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    display: block;
+}
+.sort_bar .topnav>li:hover .submenu{
+    display: block;
+}
+
+.item_list li{
+    display: inline-block;
+    vertical-align: top;
+    line-height: 1.5;
+}
+
+.case_img{
+    width:200px;
+    margin-right: 30px;
+    height:200px;
+}
+.case_list .item_list li .case_img{
+    float:left;
+}
+
+
+
+/* case */
+.words{
+    color: #999;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 150;
+}
+
+.aside-left{
+    position: absolute;
+    float: left;
+    width:60px;
+    margin-left: -100px;
+}
+.aside-right{
+    float: right;
+    width:350px;
+    margin-top: 50px;
+    margin-left: 20px;
+}
+.main{
+    overflow: hidden;
+    padding: 20px;
+
+    border-left: 1px solid #ccc;
+}
+.adv{
+    width: 100%;
+    display: block;
+}
+
+.section .link a:hover{
+    text-decoration: underline;
+}
+
+.download_btn{
+    text-decoration: underline;
+}
+
+/* footer */
+.footer .container{
+    margin-top: 50px;
+    border-top:1px solid #ccc;
+    margin-bottom: 50px;
+}
+.footer .container .box{
+    margin-top: 50px;
+}
+
+
+/*==================================================*/
+.sort_bar{
+    line-height: 35px;
+    position: relative;
+    margin-left: 4px;
+    cursor: pointer;
+    width: 170px;
+    color: #999;
+    border: 2px solid #999;
+    background: #ffffff;
+}
+
+.sort_bar:hover .sort-title{
+    color: #008c8c;
+}
+
+.submenu{
+    display: none;
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    margin-left: -2px;
+    border: 2px solid #999;
+    padding: 0;
+}
+
+.sort_bar:hover .submenu{
+    display: block;
+}
+
+.submenu li{
+    list-style: none;
+    background: white;
+    color: #999;
+    font-weight: 400;
+    display: block;
+}
+.sort-title{
+    padding-left: 5px;
+}
+.sort-option{
+    line-height: 1.5;
+    padding-left: 4px;
+}
+.sort-option:hover{
+    color: #008c8c;
+}
+
+.case-intro-box{
+    color: #999;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.case-create-date{
+    margin: 5px 0;
+    font-size: 10px;
+}
+
+.case-intro{
+    font-size: 12px;
+    width: 425px;
+    margin-left: 230px;
+    margin-top: 0;
+    line-height: 1.2em;
+}
+
+/*==============================================================*/
+.download_section{
+    margin: 5px 0;
+}
+
+.task-title{
+    margin: 50px 0 5px 0;
+}
+.content-box li:first-child .task-title {
+    margin-top: 10px;
+}
+.flow-chart-box{
+    margin-top: 20px;
+}
+.flow-chart{
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    box-shadow: 1px 1px 10px 0px #999999;
+}
+
+
+
+
+
+
+
+
+

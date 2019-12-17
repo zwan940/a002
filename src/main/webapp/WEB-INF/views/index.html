@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>BIM</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="static/css/test1.css">
+    <script src="static/js/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container clearfix">
+            <div class="logo left">
+                <h1>
+                    <a href="">BIM</a>
+                </h1>
+            </div>
+            <div class="search left">
+                <form>
+                    <input type="text" class="search_input" placeholder="" id="searchInput"/>
+                    <input type="button" class="search_btn" id="searchButton"/>
+                </form>
+            </div>
+            <div class="menu right">
+                <h1>
+                    <a href="">Sign in</a>
+                </h1>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="sort_bar">
+            <a class="sort-title">Sort By <span id="sortMethod">Default</span></a>
+            <ul class="submenu">
+                <li class="sort-option" id="sortByName" value="0">Default</li>
+                <li class="sort-option" id="sortByDate" value="1">Create date</li>
+            </ul>
+        </div>
+        <div class="case_list">
+            <ul class="item_list" id="content"></ul>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="box">
+        </div>
+        <div class="container clearfix">
+            <div class="box">
+                <div class="github left">
+                    <a href="">Github</a>
+                </div>
+                <div class="policy right">
+                    <a href="">About</a>
+                    |
+                    <a href="">Private Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+<script>
+    function getSimpledIntro(intro, len){
+        if (intro.length > len){
+            return intro.substr(0, len) + "...";
+        }
+        return intro;
+    }
+
+    // =============================================
+
+    // 1. 事件绑定
+    // 1.1 为排序列表绑定点击事件：点击时请求后台
+    $(".submenu > .sort-option").click(function () {
+        $("#sortMethod").text($(this).text());  // 将点击文字渲染上去
+
+        // 1.1.1 请求后台，获取数据，循环写入
+        var requirePath = ($(this).text()==="Default")? "sortByName": "sortByDate";
+        requireCaseListThenDisplay(requirePath);
+    });
+
+    // 1.2 为搜索按钮绑定点击事件
+    $("#searchButton").click(function () {
+        var keyword = $("#searchInput").val();
+        if (keyword === ""){
+            return null;
+        }
+
+        // 请求后台，获取数据，将数据刷新到页面
+        var requirePath = "sortByKeyword";
+        requireCaseListThenDisplay(requirePath, keyword)
+    });
+
+    // 2. 刷新页面时渲染一次数据：手动触发一次点击事件
+    var sortMethod = $("#sortMethod").text();
+    if (sortMethod === "Create date"){
+        $("#sortByDate").click();
+    } else if (sortMethod === "Default"){
+        $("#sortByName").click();
+    }
+
+    function requireCaseListThenDisplay(path, keyword) {
+        var hostAddress = "localhost";
+        var port = 8888;
+        var hostName = "a002";
+        var webAppPath = "http://" + hostAddress + ":" + port + "/" + hostName;
+        var targetUrl = webAppPath + "/" + path;
+        var introLen = 210;
+
+        $.ajax({
+            url: targetUrl,
+            type: "GET",
+            dataType: "json",
+            data: {
+                "keyword": keyword
+            },
+            success: function (caseList) {
+                $("#content").empty();
+
+                for (var i=0; i<caseList.length; i++){
+                    var id = caseList[i]["id"];
+                    var title = caseList[i]["title"];
+                    var intro = getSimpledIntro(caseList[i]["introduction"], introLen);
+                    var createDate = new Date(caseList[i]["createDate"]);
+                    var dateStr = createDate.toLocaleDateString().split('/').reverse().join('/');
+                    var imgUrl = caseList[i]["imgUrl"];
+                    var detailUrl = webAppPath+"/detail?id="+id;
+                    console.log(detailUrl);
+
+                    $("#content").append("" +
+                        "<li class='clearfix'>\n" +
+                        "    <div class='case_img'>\n" +
+                        "        <a href='"+detailUrl+"'>\n" +
+                        "            <img class='example_img' src='"+imgUrl+"'>\n" +
+                        "        </a>\n" +
+                        "    </div>\n" +
+                        "    <div class='case-intro-box'>\n" +
+                        "        <a href='"+detailUrl+"'>"+title+"</a>\n" +
+                        "        <p class='case-create-date'>"+dateStr+"</p>\n" +
+                        "        <p class='case-intro'>\n" +
+                        "            " + intro +
+                        "        </p>\n" +
+                        "    </div>\n" +
+                        "</li>" +
+                        "")
+                }
+            }
+        })
+    };
+
+</script>
+</html>

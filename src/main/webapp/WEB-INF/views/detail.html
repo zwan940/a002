@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Case Study</title>
+    <link rel="stylesheet" href="static/css/test1.css">
+    <script src="static/js/public.js"></script>
+    <script src="static/js/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<header class="header">
+    <div class="container clearfix">
+        <div class="logo left">
+            <h1><a href="index.html">BIM</a></h1>
+        </div>
+        <div class="menu right">
+            <h1><a href="">Sign in</a></h1>
+        </div>
+    </div>
+</header>
+
+
+<!-- Title -->
+<div class="container">
+    <div>
+        <h2 id="title">Demo Case</h2>
+    </div>
+    <div class="words clearfix">
+        <span class="left" id="createDate">00/00/0000</span>
+        <span class="right">Others</span>
+    </div>
+</div>
+
+<!-- Index -->
+<div class="section">
+    <div class="container clearfix" style="position: relative">
+        <div class="link aside-left">
+            <ul id="link-box">
+            </ul>
+        </div>
+        <div class="main">
+            <h3>Introduction</h3>
+            <p id="intro"></p>
+        </div>
+    </div>
+    <div class="flow-chart-box container">
+        <img class="flow-chart" id="flowchart" src="" alt="">
+    </div>
+</div>
+
+<!-- Content -->
+<ul class="content-box" id="content-box">
+
+</ul>
+
+<footer class="footer">
+    <div class="container clearfix">
+        <div class="box">
+            <div class="left">
+                <a href="">Github</a>
+            </div>
+            <div class="right">
+                <a href="">About</a> | <a href="">Private Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    // 解析URL，获取ID
+    function getUrlParam(name) {
+        let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        let r = window.location.search.substr(1).match(reg);    //匹配目标参数
+        if (r != null) {
+            return unescape(r[2]); return null;
+        }
+        return "";
+    }
+
+    // TODO 抽取到public.js中
+    var hostAddress = "localhost";
+    var port = 8888;
+    var hostName = "a002";
+    var webAppPath = "http://" + hostAddress + ":" + port + "/" + hostName;
+    var caseId = getUrlParam("id");
+    var targetUrl = webAppPath + "/detail//"+caseId;
+
+    $.ajax({
+        url: targetUrl,
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            let title = data["title"];
+            let intro = data["introduction"];
+            let createDate = new Date(data["createDate"]).toDateString();
+            let positionList = data["positionList"];
+            let flowChartURL = data["flowChartURL"];
+            let taskList = data["taskList"];
+            let bimAppIntro = data["bimAppIntro"];
+
+            let taskLen = taskList.length;
+
+            // 渲染
+            $("#title").html(title);
+            $("#createDate").html(createDate);
+            $("#intro").html(intro);
+            $("#flowchart").attr("src", flowChartURL);
+
+            let taskObjs = new Array(taskLen);
+            let linkObjs = new Array(taskLen);
+            for (let i=0; i<taskLen; i++){
+                let name = taskList[i]["name"];
+                let description = taskList[i]["description"];
+                let order = parseInt(taskList[i]["order"]);
+                let docList = taskList[i]["documentList"];
+
+                let docDoms = "";
+                for (let j=0; j<docList.length; j++){
+                    let type = docList[j]["type"].toUpperCase();
+                    let docUrl = docList[j]["url"];
+                    docDoms += "<p class='download_section'><a href='"+docUrl+"' class='download_btn'>Download "+type+"</a></p>\n"
+                }
+
+                taskObjs[order] =
+                    "<li class='container clearfix'>\n" +
+                    "    <h3 id='task"+ order +"' class='task-title'>"+ name +"</h3>\n" +
+                    "    <p>" + description +"</p>\n" +
+                    "    "+ docDoms +
+                    "</li>";
+                linkObjs[order] = "<li><a onclick='handTasklinkClick("+order+")' href='javascript:void(0)'>"+ name +"</a></li>"
+            }
+
+            let appIntroDom =
+                "<li class='container clearfix'>\n" +
+                "    <h3 id='Application' class='task-title'>Application</h3>\n" +
+                "    <p>"+ bimAppIntro +"</p>\n" +
+                "</li>";
+            let appLinkDom =
+                "<li><a onclick='handAppLinkClick()' href='javascript:void(0)'>Application</a></li>";
+
+            $("#content-box").empty();
+            $("#link-box").empty();
+            for (let i=1; i<=taskLen; i++){
+                $("#content-box").append(taskObjs[i]);
+                $("#link-box").append(linkObjs[i]);
+            }
+            $("#content-box").append(appIntroDom);
+            $("#link-box").append(appLinkDom);
+            // 为流程图绑定点击事件
+            $("#flowchart").click(function (event) {
+                let x = event.pageX - $(this).offset().left;
+                let y = event.pageY - $(this).offset().top;
+                x = (x>0)? x: 0;
+                y = (y>0)? y: 0;
+                // 计算(x, y)和posList中每个点的距离，取出最近的那一个，然后判断它是否小于识别距，如果是，则触发一下taskLink的点击事件
+                let targetOrder = getTargetOrder(positionList, x, y, 35);
+                if (targetOrder === -1){
+                    return null;
+                }
+                let targetId = "#task" + targetOrder;
+
+                var targetTop = $(targetId).offset().top;
+                $("html,body").animate({scrollTop: targetTop}, 1000);  //带滑动效果的跳转
+            })
+        }
+    });
+
+    function getTargetOrder(posList, x, y, radis) {
+        let minDistance = Number.MAX_VALUE;
+        let posLen = posList.length;
+        let tmpDictance = 0;
+        let targetOrder = -1;
+
+        for (let i=0; i<posLen; i++){
+            let posX = Number.parseFloat(posList[i]["posX"]);
+            let posY = Number.parseFloat(posList[i]["posY"]);
+            tmpDictance = Math.sqrt((x-posX)*(x-posX) + (y-posY)*(y-posY))
+            if (tmpDictance < minDistance) {
+                minDistance = tmpDictance;
+                targetOrder = Number.parseInt(posList[i]["order"]);
+            }
+        }
+
+        if (minDistance <= radis){
+            return targetOrder;
+        }
+        return -1;
+    }
+
+    function handTasklinkClick(targetOrder) {
+        let targetId = "#task" + targetOrder;
+        var targetTop = $(targetId).offset().top;
+        $("html,body").animate({scrollTop: targetTop}, 1000);  //带滑动效果的跳转
+    }
+
+    function handAppLinkClick() {
+        var targetTop = $("#Application").offset().top;
+        $("html,body").animate({scrollTop: targetTop}, 1000);  //带滑动效果的跳转
+    }
+</script>
+</html>
