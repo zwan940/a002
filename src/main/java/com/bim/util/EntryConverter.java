@@ -1,5 +1,6 @@
 package com.bim.util;
 
+import com.bim.dto.CaseBaseDto;
 import com.bim.entry.*;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -113,5 +114,19 @@ public class EntryConverter {
         result.setName(documentDoc.getString("name"));
         result.setType(documentDoc.getInteger("type"));
         return result;
+    }
+
+    public static CaseBaseDto convertCaseDocToDto(Document documentDoc) {
+        if (documentDoc == null) {
+            return null;
+        }
+        CaseBaseDto caseBase = new CaseBaseDto();
+        caseBase.setId(documentDoc.getObjectId("_id").toHexString());
+        caseBase.setTitle(documentDoc.getString("title"));
+        Document workflow = (Document) documentDoc.get("workflow");
+        caseBase.setIntroduction(workflow.getString("introduction"));
+        caseBase.setCreateDate(documentDoc.getDate("createDate"));
+        caseBase.setImgUrl("/static/assets/caseimgs" + "/" + documentDoc.getString("introImgName"));
+        return caseBase;
     }
 }

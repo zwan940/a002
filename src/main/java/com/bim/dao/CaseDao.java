@@ -1,5 +1,6 @@
 package com.bim.dao;
 
+import com.bim.dto.CaseBaseDto;
 import com.bim.entry.CaseEntry;
 import com.bim.entry.WorkflowEntry;
 import com.bim.util.EntryConverter;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @Repository
@@ -48,6 +50,15 @@ public class CaseDao {
         return EntryConverter.convertCaseDocToEntry(caseDocument);
     }
 
+    public CaseBaseDto selectCaseDtoById(String id){
+        MongoCollection caseCal = mongoDatabase.getCollection("case");
+        Document caseDocument =
+                (Document) caseCal.find(eq("_id", new ObjectId(id))).first();
+        if (caseDocument == null){ // 没有相关记录
+            return null;
+        }
+        return EntryConverter.convertCaseDocToDto(caseDocument);
+    }
 
 }
 

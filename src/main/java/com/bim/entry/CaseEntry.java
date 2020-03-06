@@ -13,4 +13,5 @@ public class CaseEntry {
     private String bimId;
     private Date createDate;
     private WorkflowEntry workflow;
+    private String introduction;
 }

@@ -2,6 +2,7 @@ package com.bim.service.impl;
 
 import com.bim.dao.CaseDao;
 import com.bim.dto.CaseBaseDto;
+import com.bim.entry.CaseEntry;
 import com.bim.service.CaseBaseService;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,21 @@ public class CaseBaseServiceImpl implements CaseBaseService {
         return results;
     }
 
+    //get by id
+    @Override
+    public CaseEntry getCaseById(String id){
+        CaseBaseDto dto = new CaseBaseDto();
+        CaseEntry entry = caseDao.selectCaseById(id);
+        return entry;
+    }
+    //getDTO by id
+    //TODO: implement
+    @Override
+    public CaseBaseDto getCaseBaseById(String id){
+        CaseBaseDto dto = new CaseBaseDto();
+        dto = caseDao.selectCaseDtoById(id);
+        return dto;
+    }
     private List<CaseBaseDto> getCasesAndSizeIs(int size){
         List<Document> caseDocumentList = caseDao.selectAllCase();
         return convertCaseDocumentToDto(caseDocumentList, size);
