@@ -42,7 +42,9 @@ public class EntryConverter {
         WorkflowEntry aWorkflowEntry = convertWorkflowDocToEntry(workflowDoc);
         String bimId = caseDocument.getObjectId("bimId")!=null?
                 caseDocument.getObjectId("bimId").toHexString(): null;
-
+        Document tableContent = (Document) caseDocument.get("tableContent");
+        String json = tableContent.toJson();
+        result.setTableContent(json);
         result.setId(caseDocument.getObjectId("_id").toHexString());
         result.setBimId(bimId);
         result.setCreateDate(caseDocument.getDate("createDate"));
@@ -121,6 +123,9 @@ public class EntryConverter {
             return null;
         }
         CaseBaseDto caseBase = new CaseBaseDto();
+        Document tableContent = (Document) documentDoc.get("tableContent");
+        String json = tableContent.toJson();
+        caseBase.setTableData(json);
         caseBase.setId(documentDoc.getObjectId("_id").toHexString());
         caseBase.setTitle(documentDoc.getString("title"));
         Document workflow = (Document) documentDoc.get("workflow");

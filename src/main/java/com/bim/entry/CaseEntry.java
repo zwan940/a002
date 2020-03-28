@@ -14,4 +14,5 @@ public class CaseEntry {
     private Date createDate;
     private WorkflowEntry workflow;
     private String introduction;
+    private String tableContent;
 }

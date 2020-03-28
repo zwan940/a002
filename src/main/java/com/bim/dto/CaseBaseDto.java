@@ -12,4 +12,5 @@ public class CaseBaseDto {
     private String introduction;
     private Date createDate;
     private String imgUrl;
+    private String tableData;
 }

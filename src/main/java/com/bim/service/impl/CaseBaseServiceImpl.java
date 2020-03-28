@@ -95,6 +95,9 @@ public class CaseBaseServiceImpl implements CaseBaseService {
             caseBase.setId(e.getObjectId("_id").toHexString());
             caseBase.setTitle(e.getString("title"));
             Document workflow = (Document) e.get("workflow");
+            Document tableContent = (Document) e.get("tableContent");
+            String json = tableContent.toJson();
+            caseBase.setTableData(json);
             caseBase.setIntroduction(workflow.getString("introduction"));
             caseBase.setCreateDate(e.getDate("createDate"));
             caseBase.setImgUrl(caseImgSaveDir + "/" + e.getString("introImgName"));
